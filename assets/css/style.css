@@ -1,0 +1,11 @@
+.input-group {
+    flex-direction: column;
+}
+
+.search-input {
+    width: 100%;
+}
+
+.search-button {
+    width: 100%;
+}
