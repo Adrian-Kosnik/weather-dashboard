@@ -6,6 +6,9 @@ let weatherIcon;
 let temperatue;
 let humidity;
 let windSpeed;
+let icon;
+// let iconLink = `https://openweathermap.org/img/wn/${icon}@2x.png`
+
 
 let searchBtnElm = $('#search-button');
 let searchInputElm = $('#search-input');
@@ -32,20 +35,23 @@ function getWeatherData() {
         method: "GET"
       }).then(function(response) {
         // this converts temp from kelvin to celsius and saves it.
-        temperatue = Math.floor(response.main.temp - 273.15)
-        windSpeed = response.wind.speed
-        humidity = response.main.humidity
-        console.log(`Temperature: ${temperatue}°C`)
-        console.log(`Wind Speed: ${windSpeed}mps`)
-        console.log(`Humidity: ${humidity}%`)
+        temperatue = Math.floor(response.main.temp - 273.15);
+        windSpeed = response.wind.speed;
+        humidity = response.main.humidity;
+        icon = response.weather[0].icon;
+        console.log(`Temperature: ${temperatue}°C`);
+        console.log(`Wind Speed: ${windSpeed}mps`);
+        console.log(`Humidity: ${humidity}%`);
+        console.log(`Icon: ${icon}`);
+        renderTodaysWeather();
       });
 };
 
 let prevSearch = [];
 
  // Function for displaying previous search data
- function renderButtons() {
-  // Deletes the search history prior to adding new movies
+function renderButtons() {
+  // Deletes the search history prior to adding new searches
   // (this is necessary otherwise you will have repeat buttons)
   $("#buttons-view").empty();
   // Loops through the array of movies
@@ -62,7 +68,32 @@ let prevSearch = [];
     // Added the button to the buttons-view div
     $("#buttons-view").append(a);
   };
-}
+};
+
+// Function for displaying todays weather data
+let currentCityDivElm = $('<div>');
+let curCityTempElm = $('<div>');
+let curCityWindElm = $('<div>');
+let curCityHumidityElm = $('<div>');
+let curCityIconElm = $('<img>');
+currentCityDivElm.addClass('h2');
+
+
+
+function renderTodaysWeather() {
+  currentCityDivElm.text(`${city} ${dateToday}`);
+  curCityTempElm.text(`Temperature: ${temperatue}°C`);
+  curCityWindElm.text(`Wind Speed: ${windSpeed}mps`);
+  curCityHumidityElm.text(`Humidity: ${humidity}%`);
+  curCityIconElm.attr("src", `https://openweathermap.org/img/wn/${icon}@2x.png`);
+  $('#today').append(currentCityDivElm);
+  $('#today').append(curCityTempElm);
+  $('#today').append(curCityWindElm);
+  $('#today').append(curCityHumidityElm);
+  $('.h2').append(curCityIconElm);
+};
+
+
 
 // This event listener checks if the search button has been clicked
 // and populates the endpoint url with necessery data after which it
@@ -79,14 +110,15 @@ searchBtnElm.on('click', function(event) {
 
 
     prevSearch.push(city);
+    localStorage.setItem('prevSearch', prevSearch);
     console.log(prevSearch);
     renderButtons();
 
-
     console.log(`This is city variable within the event: ${city}`)
     weatherDataURL = `http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&APPID=${apiKey}`
-
+    searchInputElm.val('');
     getWeatherData();
+
 });
 
 
