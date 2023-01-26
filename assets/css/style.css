@@ -9,3 +9,16 @@
 .search-button {
     width: 100%;
 }
+
+#today {
+    width: 100%;
+    border: 1px solid black;
+}
+
+.list-group button {
+    margin-bottom: 10px;
+}
+
+.prev-search {
+    width: 100%;
+}
